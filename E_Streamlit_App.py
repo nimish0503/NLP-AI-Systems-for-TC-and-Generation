@@ -10,8 +10,7 @@ st.set_page_config(page_title="Interview NLP App", layout="wide")
 st.title("🎤 Interview Transcript Classifier & Generator")
 
 # ---- Load models and data ----
-df = pd.read_csv("train.csv").dropna()
-#df = pd.read_csv("/Users/nimishmathur/Desktop/NLP/Final Exam/data/train.csv").dropna()
+df = pd.read_csv("train.csv").dropna()  # Adjusted to look in the current folder for train.csv
 df["Labels"] = df["Labels"].astype(str)
 
 # Load UMAP and vectorizer
@@ -21,9 +20,9 @@ X_vec = tfidf_vectorizer.transform(df["Interview Text"])
 X_embedded = umap_model.transform(X_vec)
 df["x"], df["y"] = X_embedded[:, 0], X_embedded[:, 1]
 
-# Load classification model and tokenizer
-classifier = DistilBertForSequenceClassification.from_pretrained("results")
-tokenizer = DistilBertTokenizerFast.from_pretrained("results")
+# Load classification model and tokenizer from Hugging Face
+classifier = DistilBertForSequenceClassification.from_pretrained("nimishmathur0503/interview-distilbert")
+tokenizer = DistilBertTokenizerFast.from_pretrained("nimishmathur0503/interview-distilbert")
 
 # ---- Classify transcript function ----
 def predict_category(text):
