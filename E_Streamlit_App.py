@@ -20,9 +20,16 @@ X_vec = tfidf_vectorizer.transform(df["Interview Text"])
 X_embedded = umap_model.transform(X_vec)
 df["x"], df["y"] = X_embedded[:, 0], X_embedded[:, 1]
 
-# Load classification model and tokenizer from Hugging Face
-classifier = DistilBertForSequenceClassification.from_pretrained("nimishmathur0503/interview-distilbert")
-tokenizer = DistilBertTokenizerFast.from_pretrained("nimishmathur0503/interview-distilbert")
+from transformers import DistilBertForSequenceClassification, DistilBertTokenizerFast
+from huggingface_hub import login
+
+# Log in with your token (make sure it's added in your Hugging Face account)
+login(token="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")
+
+# Load the model with authentication
+classifier = DistilBertForSequenceClassification.from_pretrained("nimishmathur0503/interview-distilbert", use_auth_token=True)
+tokenizer = DistilBertTokenizerFast.from_pretrained("nimishmathur0503/interview-distilbert", use_auth_token=True)
+
 
 # ---- Classify transcript function ----
 def predict_category(text):
