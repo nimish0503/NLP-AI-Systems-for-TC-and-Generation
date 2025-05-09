@@ -4,6 +4,7 @@ import torch
 import joblib
 import plotly.express as px
 from transformers import pipeline, DistilBertTokenizerFast, DistilBertForSequenceClassification
+from huggingface_hub import login
 
 # ---- Page setup ----
 st.set_page_config(page_title="Interview NLP App", layout="wide")
@@ -14,22 +15,18 @@ df = pd.read_csv("train.csv").dropna()  # Adjusted to look in the current folder
 df["Labels"] = df["Labels"].astype(str)
 
 # Load UMAP and vectorizer
-umap_model = joblib.load("DistilBERT_Model.pkl")
-tfidf_vectorizer = joblib.load("tfidf_vectorizer.pkl")
+umap_model = joblib.load("umap_model.pkl")  # Load UMAP model
+tfidf_vectorizer = joblib.load("tfidf_vectorizer.pkl")  # Load TF-IDF vectorizer
 X_vec = tfidf_vectorizer.transform(df["Interview Text"])
 X_embedded = umap_model.transform(X_vec)
 df["x"], df["y"] = X_embedded[:, 0], X_embedded[:, 1]
 
-from transformers import DistilBertForSequenceClassification, DistilBertTokenizerFast
-from huggingface_hub import login
-
-# Log in with your token (make sure it's added in your Hugging Face account)
+# ---- Hugging Face login and model loading ----
 login(token="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")
 
-# Load the model with authentication
+# Load the DistilBERT model and tokenizer with authentication
 classifier = DistilBertForSequenceClassification.from_pretrained("nimishmathur0503/interview-distilbert", use_auth_token=True)
 tokenizer = DistilBertTokenizerFast.from_pretrained("nimishmathur0503/interview-distilbert", use_auth_token=True)
-
 
 # ---- Classify transcript function ----
 def predict_category(text):
@@ -121,3 +118,4 @@ with tab3:
     However, misuse can lead to misattributed or misleading quotes. 
     Ethical guidelines must ensure AI responses are properly disclosed and not mistaken for real speech.
     """)
+
