@@ -10,7 +10,7 @@ st.set_page_config(page_title="Interview NLP App", layout="wide")
 st.title("🎤 Interview Transcript Classifier & Generator")
 
 # ---- Load models and data ----
-df = pd.read_csv("/data/train.csv").dropna()
+df = pd.read_csv("train.csv").dropna()
 #df = pd.read_csv("/Users/nimishmathur/Desktop/NLP/Final Exam/data/train.csv").dropna()
 df["Labels"] = df["Labels"].astype(str)
 
